@@ -8,15 +8,15 @@ The PydanticAI SQLite Agent is a Python application that leverages a Large Langu
 
 The project is organized into the following key Python files:
 
-- `/home/danialmirxa/PydanticAI_SQLite_Agent/sql.py`: Provides low-level functions for database operations like listing tables, describing table schemas, and running SQL queries.
-- `/home/danialmirxa/PydanticAI_SQLite_Agent/load_models.py`: Handles the configuration and instantiation of the Gemini language model.
-- `/home/danialmirxa/PydanticAI_SQLite_Agent/sql_agent.py`: Defines the core AI agent, its tools (which wrap functions from `sql.py`), system prompt, and the main execution logic for user interaction.
-- `/home/danialmirxa/PydanticAI_SQLite_Agent/.env`: (User-created) Stores sensitive information like API keys.
-- `/home/danialmirxa/PydanticAI_SQLite_Agent/.gitignore`: Specifies intentionally untracked files that Git should ignore.
+- `PydanticAI_SQLite_Agent/sql.py`: Provides low-level functions for database operations like listing tables, describing table schemas, and running SQL queries.
+- `PydanticAI_SQLite_Agent/load_models.py`: Handles the configuration and instantiation of the Gemini language model.
+- `PydanticAI_SQLite_Agent/sql_agent.py`: Defines the core AI agent, its tools (which wrap functions from `sql.py`), system prompt, and the main execution logic for user interaction.
+- `PydanticAI_SQLite_Agent/.env`: (User-created) Stores sensitive information like API keys.
+- `PydanticAI_SQLite_Agent/.gitignore`: Specifies intentionally untracked files that Git should ignore.
 
 ## 3. Core Components
 
-### 3.1. `/home/danialmirxa/PydanticAI_SQLite_Agent/sql.py` - Database Interaction Utilities
+### 3.1. `PydanticAI_SQLite_Agent/sql.py` - Database Interaction Utilities
 
 This module is responsible for all direct interactions with the SQLite database using SQLAlchemy. It abstracts the database operations into reusable functions.
 
@@ -41,7 +41,7 @@ This module is responsible for all direct interactions with the SQLite database 
         - `limit (Optional[int])`: The maximum number of rows to return (defaults to 10). If `None`, all rows are returned.
     - **Returns**: A JSON string representing a list of dictionaries, where each dictionary is a row from the query result. Dates and other non-standard JSON types are converted to strings. Returns an error message string if an exception occurs during query execution or result processing.
 
-### 3.2. `/home/danialmirxa/PydanticAI_SQLite_Agent/load_models.py` - Language Model Configuration
+### 3.2. `PydanticAI_SQLite_Agent/load_models.py` - Language Model Configuration
 
 This script is dedicated to setting up the language model used by the AI agent.
 
@@ -54,7 +54,7 @@ This script is dedicated to setting up the language model used by the AI agent.
 - **Output**:
     - `GEMINI_MODEL`: A configured instance of `GeminiModel` that is imported and used by `sql_agent.py`.
 
-### 3.3. `/home/danialmirxa/PydanticAI_SQLite_Agent/sql_agent.py` - The AI Agent
+### 3.3. `PydanticAI_SQLite_Agent/sql_agent.py` - The AI Agent
 
 This is the central script where the AI agent is defined, configured, and run.
 
@@ -121,7 +121,7 @@ This is the central script where the AI agent is defined, configured, and run.
     ```
 
 4.  **Create `.env` File**:
-    In the root directory of the project (`/home/danialmirxa/PydanticAI_SQLite_Agent/`), create a file named `.env` and add your Gemini API key:
+    In the root directory of the project (`PydanticAI_SQLite_Agent/`), create a file named `.env` and add your Gemini API key:
     ```env
     GEMINI_API_KEY="YOUR_ACTUAL_GEMINI_API_KEY"
     ```
