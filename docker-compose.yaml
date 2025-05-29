@@ -1,7 +1,7 @@
 name: chinook
 services:
   postgres:
-    image: postgres:bookworm
+    image: pgvector/pgvector:pg17
     container_name: postgres_chinook
     restart: always
     environment:
