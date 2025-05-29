@@ -53,7 +53,6 @@ def run_sql_query(db_engine: Engine, query: str, limit: Optional[int] = 10) -> s
 
     with Session(db_engine) as session, session.begin():
         result = session.execute(text(query))
-
         try:
             if limit:
                 rows = result.fetchmany(limit)
