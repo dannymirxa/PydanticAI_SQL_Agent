@@ -18,7 +18,7 @@ import re
 
 @dataclass
 class Dependencies:
-    dataframe: pl.DataFrame
+    dataframe: pd.DataFrame
 
 class Success(BaseModel):
     explanation: Annotated[str, MinLen(1), Field(
