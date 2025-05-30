@@ -5,7 +5,7 @@ from pydantic_ai import Agent, RunContext
 from sqlalchemy import Engine, create_engine
 from load_models import OPENAI_MODEL
 from sql import list_tables, describe_table, run_sql_query
-from dataframe import create_dataframe
+from dataframe import create_dataframe_pl
 from typing import Annotated
 from annotated_types import MinLen
 from typing_extensions import TypeAlias, Union
@@ -100,7 +100,7 @@ def create_dataframe_tool(ctx: RunContext[Dependencies], query: str) -> str:
     This JSON string is intended for the final presentation of query results to the user.
     Do not call this if 'run_sql_tool' indicated no data or an error.
     """
-    return create_dataframe(ctx.deps.db_engine, query)
+    return create_dataframe_pl(ctx.deps.db_engine, query)
 
 @agent.output_validator
 def response_output_validator(output: Response) -> Response:
