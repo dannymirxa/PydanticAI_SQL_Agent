@@ -25,6 +25,10 @@ class Success(BaseModel):
         alias='explanation',
         description="Explanation of the Python code"
     )]
+    insights: Annotated[str, MinLen(1), Field(
+        alias='insights',
+        description="insights from the dataset and graph"
+    )]
     python_code: Annotated[str, MinLen(1), Field(
         alias='python_code',
         description='Python code to plot the graph, as markdown'
@@ -48,12 +52,15 @@ option = ('Scatter', 'Line', 'Histograph', 'Bargraph', 'Pie Chart')
 async def system_prompt(ctx: RunContext[Dependencies]) -> str:
     return \
     f"""
-        system: you are an AI assistant that will make best fit graph by viewing the dataset content and also write short and complete python code to plot graphs. dataset columns names are - {ctx.deps.dataframe.columns} data is already read in df.
+        system: you are an AI assistant that will make best fit graph and valuabe insights from the dataset content and also write short and complete python code to plot graphs. 
+                dataset columns names are - {ctx.deps.dataframe.columns}. data is already read in df.
 
-        human: this is the sample of the dataset values (df.head(2) - {ctx.deps.dataframe.head(10)})
+        human: this is the sample of the dataset values (df.head(10) - {ctx.deps.dataframe.head(10)})
+
         note - read the user input and look for the graph type among these: {option}
         note - based on the user input, pick only one of the graph type
-        note - Only use matplotlib and seaborn
+        note - produce valuable insights from the dataset and the graph
+        note - only use matplotlib and seaborn
 
         When returning the results in the `Success` object, the `python_code` field should be formatted as markdown.
     """
@@ -62,6 +69,8 @@ if __name__ == '__main__':
     deps = Dependencies(dataframe=df)
 
     response1 = chart_agent.run_sync("Using pie chart, show how many users based of their birth month", deps=deps)
+    print(response1.output.explanation)
+    print(response1.output.insights)
     print(response1.output.python_code)
 
     # print(dedent(response1.output.python_code))
