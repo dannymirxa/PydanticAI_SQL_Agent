@@ -5,7 +5,7 @@ from pydantic_ai import Agent, RunContext
 from sqlalchemy import Engine, create_engine
 from load_models import OPENAI_MODEL
 from sql import list_tables, describe_table, run_sql_query
-from dataframe import create_dataframe
+from dataframe import create_dataframe_pd
 from typing import Annotated
 from annotated_types import MinLen
 from typing_extensions import TypeAlias, Union
@@ -18,6 +18,7 @@ import re
 
 @dataclass
 class Dependencies:
+    # db_engine: Engine
     dataframe: pd.DataFrame
 
 class Success(BaseModel):
@@ -64,11 +65,24 @@ async def system_prompt(ctx: RunContext[Dependencies]) -> str:
 
         When returning the results in the `Success` object, the `python_code` field should be formatted as markdown.
     """
+
+# def create_dataframe_pl(engine: Engine, query: str):
+#     try:
+#         with engine.connect() as conn:
+#             df = pd.read_sql(query=query, con=conn)
+#             return json.dumps(df.write_json())
+#     except Exception as e:
+#         return json.dumps({"error": f"Error processing query results: {str(e)}", "data": []})
+
 if __name__ == '__main__':
-    df = pd.read_csv("./users_data.csv")
+    
+    db_engine = create_engine('postgresql+psycopg2://chinook:chinook@localhost:5433/chinook_auto_increment')
+    df = create_dataframe_pd(db_engine, "SELECT ar.name AS artist_name, COUNT(DISTINCT al.album_id) AS album_count FROM artist ar JOIN album al ON ar.artist_id = al.artist_id JOIN track t ON al.album_id = t.album_id JOIN genre g ON t.genre_id = g.genre_id WHERE g.name = 'Metal' GROUP BY ar.name;")
+
     deps = Dependencies(dataframe=df)
 
-    response1 = chart_agent.run_sync("Using pie chart, show how many users based of their birth month", deps=deps)
+    response1 = chart_agent.run_sync("Using bar chart, show how many album for each artist", deps=deps)
+    
     print(response1.output.explanation)
     print(response1.output.insights)
     print(response1.output.python_code)
@@ -79,8 +93,11 @@ if __name__ == '__main__':
 
     exec_globals = {"df": df, "sns": sns, "plt": plt, "pd": pd}
 
-    code_blocks = str(response1.output.python_code).replace("```", "")
-    code_blocks = code_blocks.replace("python", "")
-    print(code_blocks)
-    exec(code_blocks, exec_globals)
+    code_blocks = re.findall(r"```python\n(.*?)```", response1.output.python_code, re.DOTALL)
+    if code_blocks:
+        for code_block in code_blocks:
+            print(code_block)
+            exec(code_block, exec_globals)
+    else:
+        print("No python code block found in the response.")
 
