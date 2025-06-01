@@ -66,13 +66,13 @@ async def system_prompt(ctx: RunContext[Dependencies]) -> str:
         When returning the results in the `Success` object, the `python_code` field should be formatted as markdown.
     """
 
-def create_dataframe_pl(engine: Engine, query: str):
-    try:
-        with engine.connect() as conn:
-            df = pd.read_sql(query=query, con=conn)
-            return json.dumps(df.write_json())
-    except Exception as e:
-        return json.dumps({"error": f"Error processing query results: {str(e)}", "data": []})
+# def create_dataframe_pl(engine: Engine, query: str):
+#     try:
+#         with engine.connect() as conn:
+#             df = pd.read_sql(query=query, con=conn)
+#             return json.dumps(df.write_json())
+#     except Exception as e:
+#         return json.dumps({"error": f"Error processing query results: {str(e)}", "data": []})
 
 if __name__ == '__main__':
     
@@ -93,8 +93,11 @@ if __name__ == '__main__':
 
     exec_globals = {"df": df, "sns": sns, "plt": plt, "pd": pd}
 
-    code_blocks = str(response1.output.python_code).replace("```", "")
-    code_blocks = code_blocks.replace("python", "")
-    print(code_blocks)
-    exec(code_blocks, exec_globals)
+    code_blocks = re.findall(r"```python\n(.*?)```", response1.output.python_code, re.DOTALL)
+    if code_blocks:
+        for code_block in code_blocks:
+            print(code_block)
+            exec(code_block, exec_globals)
+    else:
+        print("No python code block found in the response.")
 
