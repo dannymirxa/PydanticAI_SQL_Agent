@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from sqlalchemy import Engine, create_engine
 from load_models import OPENAI_MODEL
-from sql import list_tables, describe_table, run_sql_query
+from sql_operations import list_tables, describe_table, run_sql_query
 from dataframe import create_dataframe_pl
 from typing import Annotated
 from annotated_types import MinLen
